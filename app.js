@@ -150,8 +150,11 @@ function renderPanel() {
       const row = state.leaderboard.find((r) => r.is_me);
       if (row) rankLine = `최종 <b>${row.rank}등</b>${prizeFor(row.rank) ? ` · ${prizeFor(row.rank)}` : ""}`;
     }
-    body.innerHTML = `${header}<p class="muted center">내 점수</p><div class="result-total">${me.total}점</div><p class="big center">${rankLine}</p><button class="btn ghost" id="replay">🎬 내 플레이 다시 보기</button>`;
+    const myRow = isRevealed() && state.leaderboard ? state.leaderboard.find((r) => r.is_me) : null;
+    const prizeBtn = myRow && myRow.rank <= 20 ? `<button class="btn" id="prize">🎁 내 선물 받기</button>` : "";
+    body.innerHTML = `${header}<p class="muted center">내 점수</p><div class="result-total">${me.total}점</div><p class="big center">${rankLine}</p>${prizeBtn}<div id="prize-box"></div><button class="btn ghost" id="replay">🎬 내 플레이 다시 보기</button>`;
     $("replay").onclick = () => runBoard(me, false);
+    if (prizeBtn) $("prize").onclick = openPrize;
   } else if (isClosed() || isFull()) {
     body.innerHTML = `${header}<p class="big center">${isClosed() ? "참가가 마감됐어요." : "선착순 20명이 모두 찼어요."}<br>21:00에 결과가 공개돼요.</p>`;
   } else {
@@ -186,6 +189,46 @@ function render() {
   updateChips();
   renderPanel();
   renderLeaderboard();
+}
+
+async function decryptPrize(file, keyB64) {
+  const res = await fetch(`prizes/${file}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("파일을 불러오지 못했어요");
+  const buf = new Uint8Array(await res.arrayBuffer());
+  const raw = Uint8Array.from(atob(keyB64), (c) => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
+  return URL.createObjectURL(new Blob([plain], { type: "image/png" }));
+}
+
+async function openPrize() {
+  const btn = $("prize");
+  const box = $("prize-box");
+  btn.disabled = true;
+  btn.textContent = "선물 포장 푸는 중…";
+  try {
+    let data;
+    if (DEMO) {
+      data = { rank: 1, item: "데바데 DLC" };
+    } else {
+      const res = await sb.rpc("my_prize");
+      if (res.error) throw new Error(res.error.message);
+      data = res.data;
+    }
+    if (!data.item) {
+      box.innerHTML = `<p class="big center">아쉽지만 이번엔 선물이 없어요 👻</p>`;
+    } else if (!data.file) {
+      box.innerHTML = `<p class="big center">🎮 <b>${esc(data.item)}</b> 당첨!<br>운영자가 디스코드로 따로 보내드려요.</p>`;
+    } else {
+      const url = await decryptPrize(data.file, data.key);
+      box.innerHTML = `<p class="big center">🎉 <b>${esc(data.item)}</b> 기프티콘이에요!<br>길게 눌러 저장하거나 캡처해 두세요.</p><img class="gift" src="${url}" alt="${esc(data.item)} 기프티콘"><a class="btn ghost" href="${url}" download="${esc(data.item)}.png">⬇️ 이미지 저장</a>`;
+    }
+    btn.remove();
+  } catch (e) {
+    toast("선물을 불러오지 못했어요: " + (e.message || e));
+    btn.disabled = false;
+    btn.textContent = "🎁 내 선물 받기";
+  }
 }
 
 async function signIn() {

@@ -102,7 +102,11 @@ h2 { margin: 0 0 12px; font-size: 18px; }
 .btn:disabled { opacity: 0.5; cursor: default; }
 .btn.discord { background: #5865f2; color: #fff; box-shadow: 0 6px 24px rgba(88, 101, 242, 0.4); }
 .btn.ghost { background: rgba(255, 255, 255, 0.08); color: var(--text); box-shadow: none; font-weight: 600; }
-.btn + .btn { margin-top: 10px; }
+.btn + .btn, #prize-box + .btn, #prize + #prize-box { margin-top: 10px; }
+#prize-box:empty { display: none; }
+#prize-box { margin-bottom: 10px; }
+.gift { display: block; width: 100%; border-radius: 12px; margin: 4px 0 10px; }
+a.btn { text-decoration: none; }
 
 .user { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .user img { width: 36px; height: 36px; border-radius: 50%; }

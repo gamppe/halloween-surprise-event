@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>🎃 오늘의 플링코</title>
+<meta name="description" content="하루 한 판, 공 5개. 매일 자정(KST)에 초기화되는 플링코 랭킹">
+<meta property="og:title" content="🎃 오늘의 플링코">
+<meta property="og:description" content="하루 한 판, 공 5개. 매일 자정(KST)에 초기화되는 플링코 랭킹">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bats" aria-hidden="true"><span>🦇</span><span>🦇</span><span>🦇</span></div>
+<main class="wrap">
+  <header class="hero">
+    <div class="pumpkin">🎃</div>
+    <h1>오늘의 플링코</h1>
+    <p class="sub">하루 한 판, 공 5개. 운에 맡기세요.</p>
+    <div class="chips">
+      <span class="chip" id="chip-count">오늘 –명 참가</span>
+      <span class="chip" id="chip-time">초기화까지 –</span>
+    </div>
+  </header>
+
+  <section class="card notice" id="demo-banner" hidden>
+    데모 모드예요. 결과가 저장되지 않아요.
+  </section>
+
+  <section class="card" id="panel">
+    <div id="panel-body"><p class="muted">불러오는 중…</p></div>
+  </section>
+
+  <section class="card board-card" id="board-card" hidden>
+    <div class="score-line">
+      <span>총점</span>
+      <strong id="score">0</strong>
+      <span class="balls" id="balls"></span>
+    </div>
+    <canvas id="board" aria-label="플링코 보드"></canvas>
+    <div class="board-actions" id="board-actions"></div>
+  </section>
+
+  <section class="card" id="leaderboard" hidden>
+    <h2>🏆 오늘의 순위</h2>
+    <ol class="rank-list" id="rank-list"></ol>
+  </section>
+
+  <section class="card rules">
+    <h2>📜 규칙</h2>
+    <ul>
+      <li>디스코드 계정으로 로그인하면 하루에 <b>한 번</b> 플레이할 수 있어요.</li>
+      <li>공 5개를 떨어뜨려서 칸 점수를 합산해요. 가장자리로 갈수록 점수가 커요.</li>
+      <li>결과는 서버에서 정해지고, 화면은 그 결과를 보여주기만 해요.</li>
+      <li>점수가 같으면 먼저 플레이한 사람이 높은 순위예요.</li>
+      <li>순위는 매일 <b>자정(KST)</b>에 초기화돼요.</li>
+    </ul>
+  </section>
+
+  <footer class="foot">매일 자정에 초기화돼요 👻</footer>
+</main>
+
+<script src="../config.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

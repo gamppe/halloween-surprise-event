@@ -2,7 +2,7 @@ create extension if not exists pgcrypto with schema extensions;
 
 create table if not exists public.event_config (
   id int primary key default 1 check (id = 1),
-  max_players int not null default 20,
+  max_players int not null default 100000,
   close_at timestamptz not null default '2026-10-31 20:50:00+09',
   reveal_at timestamptz not null default '2026-10-31 21:00:00+09'
 );

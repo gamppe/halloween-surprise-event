@@ -61,7 +61,7 @@ async function loadStatus() {
   if (DEMO) {
     state.status = {
       now: new Date().toISOString(),
-      max_players: 20,
+      max_players: 100000,
       close_at: DEMO_CLOSE,
       reveal_at: DEMO_REVEAL,
       count: state.demoMe ? 1 : 0,
@@ -111,7 +111,7 @@ function fmtCountdown(ms) {
 function updateChips() {
   const st = state.status;
   if (!st) return;
-  $("chip-count").textContent = `참가 ${st.count}/${st.max_players}`;
+  $("chip-count").textContent = `참가 ${st.count}명`;
   const left = new Date(st.reveal_at).getTime() - serverNow();
   $("chip-time").textContent = left > 0 ? `발표까지 ${fmtCountdown(left)}` : "🏆 결과 발표됨";
 }
@@ -133,7 +133,7 @@ function renderPanel() {
       body.innerHTML = `<p class="big center">이벤트가 끝났어요. 아래에서 최종 순위를 확인하세요!</p>`;
       return;
     }
-    const blocked = isClosed() ? "참가가 마감됐어요." : isFull() ? "선착순 20명이 모두 찼어요." : "";
+    const blocked = isClosed() ? "참가가 마감됐어요." : isFull() ? "참가 인원이 다 찼어요." : "";
     body.innerHTML = blocked
       ? `<p class="big center">${blocked}<br>21:00에 이 페이지에서 결과가 공개돼요.</p><button class="btn ghost" id="login">디스코드로 로그인해서 내 결과 보기</button>`
       : `<p class="big">디스코드 계정으로 로그인하면 <b>딱 한 번</b> 플레이할 수 있어요.</p><button class="btn discord" id="login">디스코드로 참가하기</button>`;
@@ -156,7 +156,7 @@ function renderPanel() {
     $("replay").onclick = () => runBoard(me, false);
     if (prizeBtn) $("prize").onclick = openPrize;
   } else if (isClosed() || isFull()) {
-    body.innerHTML = `${header}<p class="big center">${isClosed() ? "참가가 마감됐어요." : "선착순 20명이 모두 찼어요."}<br>21:00에 결과가 공개돼요.</p>`;
+    body.innerHTML = `${header}<p class="big center">${isClosed() ? "참가가 마감됐어요." : "참가 인원이 다 찼어요."}<br>21:00에 결과가 공개돼요.</p>`;
   } else {
     body.innerHTML = `${header}<p class="big">공 5개가 떨어지고, 떨어진 칸의 점수를 모두 더해요. <b>기회는 한 번뿐이에요.</b></p><button class="btn" id="play">🎃 공 떨어뜨리기</button>`;
     $("play").onclick = play;
@@ -240,7 +240,7 @@ async function signIn() {
 const ERRORS = {
   ALREADY_PLAYED: "이미 플레이했어요. 계정당 한 번만 가능해요.",
   CLOSED: "참가가 마감됐어요.",
-  FULL: "선착순 20명이 모두 찼어요.",
+  FULL: "참가 인원이 다 찼어요.",
   NOT_LOGGED_IN: "먼저 로그인해 주세요.",
   NOT_DISCORD: "디스코드 계정으로 로그인해 주세요.",
 };

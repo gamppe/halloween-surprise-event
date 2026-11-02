@@ -130,7 +130,8 @@ function renderPanel() {
 
   if (!loggedIn) {
     if (isRevealed()) {
-      body.innerHTML = `<p class="big center">이벤트가 끝났어요. 아래에서 최종 순위를 확인하세요!</p>`;
+      body.innerHTML = `<p class="big center">이벤트가 끝났어요! 1~20등은 로그인하면 선물을 받을 수 있어요.</p><button class="btn discord" id="login">🎁 디스코드로 로그인해서 선물 받기</button>`;
+      $("login").onclick = signIn;
       return;
     }
     const blocked = isClosed() ? "참가가 마감됐어요." : isFull() ? "참가 인원이 다 찼어요." : "";
@@ -156,7 +157,9 @@ function renderPanel() {
     $("replay").onclick = () => runBoard(me, false);
     if (prizeBtn) $("prize").onclick = openPrize;
   } else if (isClosed() || isFull()) {
-    body.innerHTML = `${header}<p class="big center">${isClosed() ? "참가가 마감됐어요." : "참가 인원이 다 찼어요."}<br>21:00에 결과가 공개돼요.</p>`;
+    body.innerHTML = isRevealed()
+      ? `${header}<p class="big center">이 계정은 이벤트에 참가하지 않았어요.<br>참가했던 디스코드 계정으로 다시 로그인해 주세요.</p>`
+      : `${header}<p class="big center">${isClosed() ? "참가가 마감됐어요." : "참가 인원이 다 찼어요."}<br>21:00에 결과가 공개돼요.</p>`;
   } else {
     body.innerHTML = `${header}<p class="big">공 5개가 떨어지고, 떨어진 칸의 점수를 모두 더해요. <b>기회는 한 번뿐이에요.</b></p><button class="btn" id="play">🎃 공 떨어뜨리기</button>`;
     $("play").onclick = play;
